@@ -1,17 +1,23 @@
 import './lotto-ball.js';
 
-// --- 전역 설정 및 상태 ---
 const URL = "https://teachablemachine.withgoogle.com/models/ZENzZR5Eg/";
 let model, webcam, labelContainer, maxPredictions;
+let isWebcamMode = false;
 
-// --- DOM 요소 ---
+// DOM 요소
 const themeToggle = document.getElementById('theme-toggle');
-const startTestButton = document.getElementById('start-test-button');
+const body = document.body;
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+const uploadBtn = document.getElementById('upload-btn');
+const imageUpload = document.getElementById('image-upload');
+const startWebcamBtn = document.getElementById('start-webcam-btn');
+const faceImage = document.getElementById('face-image');
+const webcamContainer = document.getElementById('webcam-container');
 const generateButton = document.getElementById('generate-button');
 const numbersContainer = document.getElementById('numbers-container');
-const body = document.body;
 
-// --- 테마 관리 ---
+// 테마 관리
 const currentTheme = localStorage.getItem('theme');
 if (currentTheme === 'dark') {
     body.classList.add('dark-mode');
@@ -25,26 +31,38 @@ themeToggle.addEventListener('click', () => {
     localStorage.setItem('theme', theme);
 });
 
-// --- 동물상 테스트 (Teachable Machine) ---
-async function initAnimalTest() {
-    startTestButton.disabled = true;
-    startTestButton.textContent = "모델 로딩 중...";
-    
-    const modelURL = URL + "model.json";
-    const metadataURL = URL + "metadata.json";
+// 탭 전환 로직
+tabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        
+        tabBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        
+        tabContents.forEach(content => {
+            content.classList.remove('active');
+            if (content.id === target) content.classList.add('active');
+        });
 
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
+        // 웹캠이 켜져있다면 탭 전환 시 중지
+        if (target !== 'animal-tab' && webcam) {
+            stopWebcam();
+        }
+    });
+});
 
-    const flip = true; 
-    webcam = new tmImage.Webcam(200, 200, flip); 
-    await webcam.setup(); 
-    await webcam.play();
-    window.requestAnimationFrame(loop);
+// 모델 로드
+async function loadModel() {
+    if (!model) {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
+        model = await tmImage.load(modelURL, metadataURL);
+        maxPredictions = model.getTotalClasses();
+    }
+}
 
-    document.getElementById("webcam-container").innerHTML = '';
-    document.getElementById("webcam-container").appendChild(webcam.canvas);
-    
+// 결과 컨테이너 초기화
+function initLabelContainer() {
     labelContainer = document.getElementById("label-container");
     labelContainer.innerHTML = '';
     for (let i = 0; i < maxPredictions; i++) {
@@ -61,18 +79,11 @@ async function initAnimalTest() {
         `;
         labelContainer.appendChild(wrapper);
     }
-    
-    startTestButton.textContent = "테스트 실행 중";
 }
 
-async function loop() {
-    webcam.update(); 
-    await predict();
-    window.requestAnimationFrame(loop);
-}
-
-async function predict() {
-    const prediction = await model.predict(webcam.canvas);
+// 예측 로직 (이미지/웹캠 공용)
+async function predict(inputElement) {
+    const prediction = await model.predict(inputElement);
     for (let i = 0; i < maxPredictions; i++) {
         const className = prediction[i].className;
         const probability = (prediction[i].probability * 100).toFixed(0);
@@ -84,24 +95,75 @@ async function predict() {
     }
 }
 
-startTestButton.addEventListener('click', initAnimalTest);
+// 사진 업로드 이벤트
+uploadBtn.addEventListener('click', () => imageUpload.click());
 
-// --- 로또 번호 생성기 ---
-function generateNumbers() {
-    numbersContainer.innerHTML = '';
-    const numbers = new Set();
-    while (numbers.size < 6) {
-        const randomNumber = Math.floor(Math.random() * 45) + 1;
-        numbers.add(randomNumber);
-    }
+imageUpload.addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
 
-    const sortedNumbers = Array.from(numbers).sort((a, b) => a - b);
+    stopWebcam();
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        faceImage.src = event.target.result;
+        faceImage.style.display = 'block';
+        webcamContainer.style.display = 'none';
+        
+        await loadModel();
+        initLabelContainer();
+        
+        // 이미지가 로드된 후 예측 실행
+        faceImage.onload = () => predict(faceImage);
+    };
+    reader.readAsDataURL(file);
+});
 
-    for (const number of sortedNumbers) {
-        const ball = document.createElement('lotto-ball');
-        ball.setAttribute('number', number);
-        numbersContainer.appendChild(ball);
+// 웹캠 제어
+async function startWebcam() {
+    isWebcamMode = true;
+    faceImage.style.display = 'none';
+    webcamContainer.style.display = 'block';
+    webcamContainer.innerHTML = '로딩 중...';
+
+    await loadModel();
+    initLabelContainer();
+
+    webcam = new tmImage.Webcam(200, 200, true);
+    await webcam.setup();
+    await webcam.play();
+    webcamContainer.innerHTML = '';
+    webcamContainer.appendChild(webcam.canvas);
+    window.requestAnimationFrame(webcamLoop);
+}
+
+function stopWebcam() {
+    if (webcam) {
+        webcam.stop();
+        webcam = null;
+        isWebcamMode = false;
+        webcamContainer.innerHTML = '';
     }
 }
 
-generateButton.addEventListener('click', generateNumbers);
+async function webcamLoop() {
+    if (!isWebcamMode) return;
+    webcam.update();
+    await predict(webcam.canvas);
+    window.requestAnimationFrame(webcamLoop);
+}
+
+startWebcamBtn.addEventListener('click', startWebcam);
+
+// 로또 번호 생성
+generateButton.addEventListener('click', () => {
+    numbersContainer.innerHTML = '';
+    const numbers = new Set();
+    while (numbers.size < 6) {
+        numbers.add(Math.floor(Math.random() * 45) + 1);
+    }
+    Array.from(numbers).sort((a, b) => a - b).forEach(num => {
+        const ball = document.createElement('lotto-ball');
+        ball.setAttribute('number', num);
+        numbersContainer.appendChild(ball);
+    });
+});
