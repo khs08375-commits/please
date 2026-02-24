@@ -6,6 +6,8 @@
     --button-bg: #007bff;
     --button-hover: #0056b3;
     --shadow: rgba(0, 0, 0, 0.1);
+    --input-border: #ccc;
+    --input-bg: #fff;
 }
 
 body.dark-mode {
@@ -15,6 +17,8 @@ body.dark-mode {
     --button-bg: #3700b3;
     --button-hover: #6200ee;
     --shadow: rgba(0, 0, 0, 0.5);
+    --input-border: #444;
+    --input-bg: #2d2d2d;
 }
 
 body {
@@ -36,16 +40,19 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 8px var(--shadow);
     transition: background-color 0.3s, box-shadow 0.3s;
+    width: 90%;
+    max-width: 400px;
 }
 
 .numbers-container {
     display: flex;
+    flex-wrap: wrap;
     gap: 10px;
     margin: 20px 0;
     justify-content: center;
 }
 
-#generate-button, #theme-toggle {
+#generate-button, #theme-toggle, .submit-button {
     padding: 10px 20px;
     font-size: 1rem;
     cursor: pointer;
@@ -57,8 +64,46 @@ body {
     margin: 5px;
 }
 
-#generate-button:hover, #theme-toggle:hover {
+#generate-button:hover, #theme-toggle:hover, .submit-button:hover {
     background-color: var(--button-hover);
+}
+
+hr {
+    margin: 20px 0;
+    border: none;
+    border-top: 1px solid var(--input-border);
+}
+
+.contact-section {
+    text-align: left;
+}
+
+.contact-section h2 {
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    height: 100px;
+    resize: vertical;
 }
 
 lotto-ball {
