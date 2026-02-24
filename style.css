@@ -1,20 +1,41 @@
 
+:root {
+    --bg-color: #f0f0f0;
+    --container-bg: #ffffff;
+    --text-color: #333333;
+    --button-bg: #007bff;
+    --button-hover: #0056b3;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+
+body.dark-mode {
+    --bg-color: #121212;
+    --container-bg: #1e1e1e;
+    --text-color: #e0e0e0;
+    --button-bg: #3700b3;
+    --button-hover: #6200ee;
+    --shadow: rgba(0, 0, 0, 0.5);
+}
+
 body {
     font-family: sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: #f0f0f0;
+    background-color: var(--bg-color);
+    color: var(--text-color);
     margin: 0;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
     text-align: center;
-    background-color: white;
+    background-color: var(--container-bg);
     padding: 2rem;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px var(--shadow);
+    transition: background-color 0.3s, box-shadow 0.3s;
 }
 
 .numbers-container {
@@ -24,19 +45,20 @@ body {
     justify-content: center;
 }
 
-#generate-button {
+#generate-button, #theme-toggle {
     padding: 10px 20px;
     font-size: 1rem;
     cursor: pointer;
     border: none;
-    background-color: #007bff;
+    background-color: var(--button-bg);
     color: white;
     border-radius: 5px;
     transition: background-color 0.3s;
+    margin: 5px;
 }
 
-#generate-button:hover {
-    background-color: #0056b3;
+#generate-button:hover, #theme-toggle:hover {
+    background-color: var(--button-hover);
 }
 
 lotto-ball {
