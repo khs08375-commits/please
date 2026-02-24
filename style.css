@@ -8,6 +8,7 @@
     --shadow: rgba(0, 0, 0, 0.1);
     --input-border: #ccc;
     --input-bg: #fff;
+    --accent-color: #ff6b6b;
 }
 
 body.dark-mode {
@@ -19,10 +20,11 @@ body.dark-mode {
     --shadow: rgba(0, 0, 0, 0.5);
     --input-border: #444;
     --input-bg: #2d2d2d;
+    --accent-color: #ff9f9f;
 }
 
 body {
-    font-family: sans-serif;
+    font-family: 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,6 +32,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-color);
     margin: 0;
+    padding: 20px 0;
     transition: background-color 0.3s, color 0.3s;
 }
 
@@ -37,84 +40,125 @@ body {
     text-align: center;
     background-color: var(--container-bg);
     padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px var(--shadow);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px var(--shadow);
     transition: background-color 0.3s, box-shadow 0.3s;
     width: 90%;
-    max-width: 400px;
+    max-width: 500px;
 }
 
-.numbers-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
+.header {
+    margin-bottom: 30px;
+}
+
+.header h1 { margin: 10px 0; }
+.header p { color: #888; margin-bottom: 10px; }
+
+/* 동물상 테스트 섹션 */
+.animal-test-section {
+    margin-bottom: 20px;
+}
+
+#webcam-container {
+    margin: 20px auto;
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #ddd;
+    box-shadow: 0 0 20px var(--shadow);
+}
+
+#label-container {
     margin: 20px 0;
-    justify-content: center;
 }
 
-#generate-button, #theme-toggle, .submit-button {
-    padding: 10px 20px;
+.result-bar-wrapper {
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.result-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.result-bar-bg {
+    background-color: var(--input-border);
+    border-radius: 10px;
+    height: 12px;
+    width: 100%;
+    overflow: hidden;
+}
+
+.result-bar-fill {
+    height: 100%;
+    background-color: var(--button-bg);
+    width: 0%;
+    transition: width 0.3s ease-out;
+}
+
+/* 버튼 스타일 공통 */
+#generate-button, #theme-toggle, .submit-button, #start-test-button {
+    padding: 12px 25px;
     font-size: 1rem;
     cursor: pointer;
     border: none;
     background-color: var(--button-bg);
     color: white;
-    border-radius: 5px;
-    transition: background-color 0.3s;
+    border-radius: 8px;
+    transition: all 0.3s;
     margin: 5px;
 }
 
-#generate-button:hover, #theme-toggle:hover, .submit-button:hover {
+#generate-button:hover, #theme-toggle:hover, .submit-button:hover, #start-test-button:hover {
     background-color: var(--button-hover);
+    transform: translateY(-2px);
 }
 
-hr {
-    margin: 20px 0;
-    border: none;
-    border-top: 1px solid var(--input-border);
+#start-test-button {
+    background-color: var(--accent-color);
 }
 
-.contact-section {
-    text-align: left;
-}
-
-.contact-section h2 {
-    text-align: center;
-}
-
-.form-group {
-    margin-bottom: 15px;
-}
-
-.form-group label {
-    display: block;
-    margin-bottom: 5px;
-}
-
-.form-group input, .form-group textarea {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid var(--input-border);
-    border-radius: 5px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    box-sizing: border-box;
-}
-
-.form-group textarea {
-    height: 100px;
-    resize: vertical;
+/* 로또 섹션 */
+.numbers-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 25px 0;
+    justify-content: center;
 }
 
 lotto-ball {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: white;
     font-weight: bold;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+hr {
+    margin: 30px 0;
+    border: none;
+    border-top: 2px dashed var(--input-border);
+}
+
+.contact-section { text-align: left; }
+.form-group { margin-bottom: 15px; }
+.form-group label { display: block; margin-bottom: 8px; }
+.form-group input, .form-group textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    background-color: var(--input-bg);
+    color: var(--text-color);
+    box-sizing: border-box;
 }

@@ -1,33 +1,51 @@
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lotto Number Generator</title>
+    <title>AI 동물상 테스트 & 로또 생성기</title>
     <link rel="stylesheet" href="style.css">
+    <!-- TensorFlow 및 Teachable Machine 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Lotto Number Generator</h1>
-        <div id="numbers-container" class="numbers-container"></div>
-        <button id="generate-button">Generate Numbers</button>
-        <button id="theme-toggle">Dark Mode</button>
+        <div class="header">
+            <h1>AI 동물상 테스트</h1>
+            <p>나의 얼굴은 강아지상일까, 고양이상일까?</p>
+            <button id="theme-toggle">Dark Mode</button>
+        </div>
+
+        <div class="animal-test-section">
+            <div id="webcam-container"></div>
+            <div id="label-container"></div>
+            <button type="button" id="start-test-button">테스트 시작하기</button>
+        </div>
+
+        <hr>
+
+        <div class="lotto-section">
+            <h2>로또 번호 생성기</h2>
+            <div id="numbers-container" class="numbers-container"></div>
+            <button id="generate-button">번호 생성</button>
+        </div>
 
         <hr>
 
         <div class="contact-section">
-            <h2>Partnership Inquiry</h2>
+            <h2>제휴 문의</h2>
             <form action="https://formspree.io/f/xdalpvqe" method="POST">
                 <div class="form-group">
-                    <label for="email">Your Email:</label>
+                    <label for="email">이메일:</label>
                     <input type="email" id="email" name="email" required placeholder="example@email.com">
                 </div>
                 <div class="form-group">
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" required placeholder="How can we help you?"></textarea>
+                    <label for="message">메시지:</label>
+                    <textarea id="message" name="message" required placeholder="문의 내용을 입력해주세요."></textarea>
                 </div>
-                <button type="submit" class="submit-button">Send Message</button>
+                <button type="submit" class="submit-button">문의 보내기</button>
             </form>
         </div>
     </div>
